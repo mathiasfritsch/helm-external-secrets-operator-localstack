@@ -214,8 +214,8 @@ kubectl get secret my-app-credentials -o yaml
 kubectl get externalsecret app-secret
 
 # Decode and view the secret
-kubectl get secret my-app-credentials -o jsonpath='{.data.username}' | base64 -d
-kubectl get secret my-app-credentials -o jsonpath='{.data.password}' | base64 -d
+kubectl get secret my-app-credentials -o jsonpath='{.data.username}' | ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
+kubectl get secret my-app-credentials -o jsonpath='{.data.password}' | ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
 ```
 
 ## Troubleshooting
