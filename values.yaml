@@ -11,6 +11,9 @@ localstack:
 # Step 2: External Secrets Operator installation
 externalSecrets:
   enabled: false
+
+# External Secrets subchart configuration
+external-secrets:
   installCRDs: true
   extraEnv:
     - name: AWS_ENDPOINT_URL
