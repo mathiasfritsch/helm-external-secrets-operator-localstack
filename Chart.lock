@@ -1,0 +1,9 @@
+dependencies:
+- name: localstack
+  repository: https://localstack.github.io/helm-charts
+  version: 0.6.12
+- name: external-secrets
+  repository: https://charts.external-secrets.io
+  version: 1.2.0
+digest: sha256:6946b0512d5255d9a537c691a5fcd6f1646e5cf046b2ccf61afbd77155a6a8fd
+generated: "2025-12-20T19:55:09.1566011+01:00"

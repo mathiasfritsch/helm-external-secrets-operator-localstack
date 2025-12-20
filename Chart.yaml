@@ -1,0 +1,16 @@
+apiVersion: v2
+name: eso-localstack
+description: Multi-step Helm chart for External Secrets Operator with LocalStack
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+dependencies:
+  - name: localstack
+    version: "0.6.12"
+    repository: "https://localstack.github.io/helm-charts"
+    condition: localstack.enabled
+  - name: external-secrets
+    version: "1.2.x"
+    repository: "https://charts.external-secrets.io"
+    condition: externalSecrets.enabled
