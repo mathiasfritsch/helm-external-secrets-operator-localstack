@@ -1,0 +1,49 @@
+# Development values for CatalogApi Helm Chart
+# Usage: helm install catalog-api ./CatalogApiChart -f values-dev.yaml
+
+# Einzelne Replica für Entwicklung
+replicaCount: 1
+
+image:
+  repository: catalog-api
+  pullPolicy: Never  # Verwendet immer lokales Image
+  tag: "latest"
+
+service:
+  type: NodePort  # Für einfachen Zugriff ohne LoadBalancer
+  port: 80
+  targetPort: 8080
+
+# Secret Konfiguration
+secret:
+  enabled: true
+  name: my-app-credentials
+  mountPath: /app/secrets
+  # Für Dev-Umgebung: Secret via Helm erstellen
+  createSecret: true
+  data:
+    # Base64-encoded Werte (echo -n "value" | base64)
+    username: ZGV2dXNlcg==        # devuser
+    password: ZGV2cGFzc3dvcmQ=    # devpassword
+    api-key: ZGV2LWFwaS1rZXk=     # dev-api-key
+
+# Niedrigere Ressourcen für Entwicklung
+resources:
+  limits:
+    cpu: 250m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Autoscaling deaktiviert für Dev
+autoscaling:
+  enabled: false
+
+# Dev-spezifische Labels
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+

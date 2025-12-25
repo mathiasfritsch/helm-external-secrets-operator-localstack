@@ -1,0 +1,49 @@
+replicaCount: 1
+
+image:
+  repository: catalog-api
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+ingress:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+
+# Secret configuration
+secret:
+  enabled: true
+  name: my-app-credentials
+  mountPath: /app/secrets
+  # If you want to create the secret via Helm, set createSecret to true
+  # and provide the data below
+  createSecret: false
+  data: {}
+    # Example:
+    # username: dXNlcm5hbWU=  # base64 encoded
+    # password: cGFzc3dvcmQ=  # base64 encoded
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+

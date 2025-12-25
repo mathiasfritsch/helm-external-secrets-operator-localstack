@@ -1,0 +1,90 @@
+# Production values for CatalogApi Helm Chart
+# Usage: helm install catalog-api ./CatalogApiChart -f values-prod.yaml
+
+# Mehrere Replicas für Hochverfügbarkeit
+replicaCount: 3
+
+image:
+  repository: your-registry.azurecr.io/catalog-api
+  pullPolicy: Always
+  tag: "1.0.0"  # Verwenden Sie spezifische Versionen in Produktion
+
+imagePullSecrets:
+  - name: acr-secret  # Für private Registry
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Ingress für externen Zugriff
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: catalog-api.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: catalog-api-tls
+      hosts:
+        - catalog-api.example.com
+
+# Secret wird von External Secrets Operator verwaltet
+secret:
+  enabled: true
+  name: my-app-credentials  # Wird von ExternalSecret erstellt
+  mountPath: /app/secrets
+  createSecret: false  # Nicht via Helm erstellen
+
+# Produktions-Ressourcen
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+# Horizontal Pod Autoscaling
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# Pod Disruption Budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+# Nur auf bestimmten Nodes deployen
+nodeSelector:
+  workload-type: api
+
+# Tolerations für Taints
+tolerations:
+  - key: "workload"
+    operator: "Equal"
+    value: "api"
+    effect: "NoSchedule"
+
+# Pod Anti-Affinity für bessere Verteilung
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - catalog-api
+          topologyKey: kubernetes.io/hostname
+
