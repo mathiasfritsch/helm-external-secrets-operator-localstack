@@ -23,11 +23,24 @@ public class Program
             app.MapOpenApi();
         }
 
-        app.UseHttpsRedirection();
+        // Only use HTTPS redirection in Development (not in Kubernetes)
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
 
         app.UseAuthorization();
 
         app.MapControllers();
+
+        // Health check endpoint für Kubernetes Probes
+        app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
+        app.MapGet("/", () => Results.Ok(new { 
+            name = "CatalogApi", 
+            version = "1.0.0", 
+            status = "running",
+            endpoints = new[] { "/products", "/products/config", "/secrets/check", "/health" }
+        }));
 
         // Endpoint zum Testen des Secret-Zugriffs
         app.MapGet("/secrets/check", () =>
