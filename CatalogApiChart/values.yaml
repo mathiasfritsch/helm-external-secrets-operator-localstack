@@ -28,6 +28,13 @@ resources:
 autoscaling:
   enabled: false
 
+# Health probes configuration
+probes:
+  liveness:
+    enabled: false
+  readiness:
+    enabled: false
+
 # Secret configuration
 secret:
   enabled: true

@@ -65,6 +65,8 @@ Die folgenden Werte können in der `values.yaml` konfiguriert werden:
 | `service.type` | Kubernetes Service Type | `ClusterIP` |
 | `service.port` | Service Port | `80` |
 | `service.targetPort` | Container Port | `8080` |
+| `probes.liveness.enabled` | Liveness Probe aktivieren | `false` |
+| `probes.readiness.enabled` | Readiness Probe aktivieren | `false` |
 | `secret.enabled` | Secret Mounting aktivieren | `true` |
 | `secret.name` | Name des zu mountenden Secrets | `my-app-credentials` |
 | `secret.mountPath` | Mount-Pfad im Container | `/app/secrets` |

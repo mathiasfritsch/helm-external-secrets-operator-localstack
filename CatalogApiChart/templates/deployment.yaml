@@ -35,6 +35,7 @@ spec:
         - name: SECRET_MOUNT_PATH
           value: {{ .Values.secret.mountPath }}
         {{- end }}
+        {{- if .Values.probes.liveness.enabled }}
         livenessProbe:
           httpGet:
             path: /health
@@ -43,6 +44,8 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 3
           failureThreshold: 3
+        {{- end }}
+        {{- if .Values.probes.readiness.enabled }}
         readinessProbe:
           httpGet:
             path: /health
@@ -51,6 +54,7 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 2
           failureThreshold: 3
+        {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         {{- if .Values.secret.enabled }}
